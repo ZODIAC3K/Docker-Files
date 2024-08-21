@@ -1,0 +1,54 @@
+
+services:
+  web: # renamed "server" to "web"
+    build:
+      context: .
+    ports:
+      - 5173:5173
+    volumes:
+      # hose path : container path [we can use relative path]
+      - .:/app # added bind mount to sync the files between host and container but we might face some issues related to node_modules so we are using volume to cache node_modules in volume as host and container may have different OS so node_modules may be different in host and container so we are caching node_modules in volume which will be used in container to isolate the node_modules from host node_modules and container node_modules this will help to avoid any issues related to node_modules and we can use different node modules while developing and building the project and can easily see the changes in the container without rebuilding the container.
+      - /app/node_modules # added volume to cache node_modules.
+    develop: # added develop section in compose file which will be used to run the development server in the container [we can use this section to run any command in the container]
+      watch: # added watch section in develop section which will be used to watch the files in the container [we can use this section to watch any files in the container]
+        - action: sync # added action to sync the files between host and container [we can use this action to sync any files between host and container and since we are using volume to cache node_modules so we are syncing the files between host and container to see the changes in the container without rebuilding the container]
+          path: .
+          ignore: package.json # added ignore to ignore the package.json file [we can use this ignore to ignore any file or directory]
+        - action: rebuild # added action to rebuild the container only when package.json file changes [we can use this action to rebuild the container when any new package is added or removed in the package.json file]
+          path: package.json
+
+# this is the compose file which will be used to run the development server in the container and watch the files in the container and sync the files between host and container to see the changes in the container without rebuilding the container for file changes and rebuild the container only when package.json file changes and we are keeping seperate node_modules in the volume to avoid any issues related to node_modules and we can use different node_modules in host and container and can easily see the changes in the container without rebuilding the container.
+
+
+# Note -----
+# If a path is specified on the left side (source): It represents the host path, and the right side (target) represents the container path. This configuration creates a bind mount, where files are synced between the host and container directories.
+
+# If the left side (source) is empty and only the right side (target) is given: Docker will create an anonymous volume. The volume will be managed by Docker and will store data at the specified container path.
+
+# If a name (or random string) is given on the left side (source): Docker will create or use a named volume with that name. The data will be stored at the specified container path (target), and Docker will manage the volume with the given name.
+
+
+# Othe way to achieve it and more detailed about whats going on ....
+
+# services:
+#   web:
+#     build:
+#       context: .
+#     ports:
+#       - "5173:5173"
+#     volumes:
+#       - type: bind
+#         source: ./
+#         target: /app
+#       - type: volume
+#         source: node_modules_cached_volume # If you want an anonymous volume, don’t specify the source. If you want to name your volume, you can specify the name in source.
+#         target: /app/node_modules
+#     develop:
+#       watch:
+#         - action: sync
+#           path: .
+#           ignore: node_modules # Since node_modules is isolated using a separate volume, you do not need to ignore it. Syncing node_modules is not an issue because changes on the host won't interfere with the container's node_modules.
+#         - action: rebuild
+#           path: package.json
+
+
