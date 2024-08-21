@@ -3,25 +3,26 @@ version: "3.8"
 
 # define the services/containers to be run
 services:
-  # define the frontend service
+  # define the frontend service called "web"
   # we can use any name for the service. A standard naming convention is to use "web" for the frontend
   web:
-    # we use depends_on to specify that service depends on another service
-    # in this case, we specify that the web depends on the api service
-    # this means that the api service will be started before the web service
+    # It the name of the container [we can use any name] but for front end we are using web as container name (general convention) so when we container web-x, where x represents the number of containers created using the same image.
+    # when we define something inside of depends_on, that current service depends upon the service mentioned in depends_on. So, the service mentioned in depends_on will be started before the current service. In this case, the web service depends on the api service so the api service will be started before the web service.
     depends_on: 
       - api
-    # specify the build context for the web service
-    # this is the directory where the Dockerfile for the web service is located
+    
+    # specify the build context for the web service (frontend) basically where Dockerfile is located for the frontend.
     build: ./frontend
-    # specify the ports to expose for the web service
+
+    # specify the ports to expose for the web service (frontend)
     # the first number is the port on the host machine
     # the second number is the port inside the container
     ports:
       - 5173:5173
-    # specify the environment variables for the web service
-    # these environment variables will be available inside the container
-    environment:
+
+    # specify the environment variables for the web service (frontend) and the value of the environment variable is the URL of the api service (backend) which is running on port 8000 inside the container called "api".
+    # these environment variables will be available inside the container "web" so can be accessed by the frontend code anywhere in the environment.
+    environment: 
       VITE_API_URL: http://localhost:8000
 
     # this is for docker compose watch mode
@@ -29,19 +30,19 @@ services:
     develop:
       # we specify the files to watch for changes
       watch:
-        # it'll watch for changes in package.json and package-lock.json and rebuild the container if there are any changes
+        # it'll watch for changes in package.json and package-lock.json and rebuild the container if there are any changes in these files because these files are used to install the dependencies for the frontend project and if there are any changes in these files, the dependencies need to be reinstalled  so the container needs to be rebuilt but we don't need to rebuild the image because the image is already built and we're just rebuilding the container.
         - path: ./frontend/package.json
           action: rebuild
         - path: ./frontend/package-lock.json
           action: rebuild
-        # it'll watch for changes in the frontend directory and sync the changes with the container real time
+        # It will watch for changes in the frontend directory and sync the changes with the container in real time and since we're not changing package.json or package-lock.json, we don't need to rebuild the container but just sync the changes(updated files) with the container to see the changes in the container in real time.
         - path: ./frontend
           target: /app
           action: sync
-
-  # define the api service/container
-  api: 
-    # api service depends on the db service so the db service will be started before the api service
+  # define the backend service called "api"
+  # we can use any name for the service. A standard naming convention is to use "web" for the frontend
+  api:
+    # specify the service the api service depends on (db service) so the db service will be started before the api service is started
     depends_on: 
       - db
 

@@ -1,10 +1,10 @@
 
 services:
-  web: # renamed "server" to "web"
+  web: # It the name of the container [we can use any name] but for front end we are using web as container name (general convention) so when we container web-x, where x represents the number of containers created using the same image.
     build:
-      context: .
+      context: . # It is the path to the Dockerfile for React(Frontend).
     ports:
-      - 5173:5173
+      - 5173:5173 
     volumes:
       # hose path : container path [we can use relative path]
       - .:/app # added bind mount to sync the files between host and container but we might face some issues related to node_modules so we are using volume to cache node_modules in volume as host and container may have different OS so node_modules may be different in host and container so we are caching node_modules in volume which will be used in container to isolate the node_modules from host node_modules and container node_modules this will help to avoid any issues related to node_modules and we can use different node modules while developing and building the project and can easily see the changes in the container without rebuilding the container.
