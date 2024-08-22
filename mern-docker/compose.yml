@@ -56,7 +56,9 @@ services:
       - 8000:8000
 
     # specify environment variables for the api service
-    # for demo purposes, we're using a local mongodb instance
+    # here we're specifying the environment variable DB_URL which is the URL of the mongodb database running inside the db service called "db" and the URL is mongodb://db/anime where "db" is the name of the service and "anime" is the name of the database inside the mongodb database. if we're using mongodb atlas, we can specify the URL of the mongodb atlas database here. 
+    # Note --
+    # here "anime" is the name of the database inside the mongodb database. If database "anime" doesn't exist, it'll be created automatically when the api service is started. here database name "anime" and volume name "anime" are the same but they can be different and it is recommended to keep them the same for simplicity.
     environment: 
       DB_URL: mongodb://db/anime
     
@@ -93,8 +95,8 @@ services:
     # we're mounting the volume named "anime" inside the container at /data/db directory
     # this is done so that the data inside the mongodb container is persisted even if the container is stopped
     volumes:
-      - anime:/data/db
+      - anime-db-data:/data/db
 
 # define the volumes to be used by the services
 volumes:
-  anime:
+  anime-db-data:
