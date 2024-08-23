@@ -14,7 +14,7 @@ USER app
 WORKDIR /app
 
 # Copy package.json and package-lock.json before other files for better cache on later builds
-COPY package*.json ./ 
+COPY package*.json ./
 
 # we change the user to root to basically give ownership of the /app directory to the app user from the root user and then we change the user back to the app user, we do this because the npm install command requires root access to install the packages globally and we don't want to run the app as root.
 USER root
