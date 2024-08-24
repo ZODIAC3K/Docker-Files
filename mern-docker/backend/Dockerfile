@@ -20,6 +20,7 @@ COPY package*.json ./
 USER root
 # chown -R <user>:<group> <directory>
 RUN chown -R app:app /app
+
 USER app
 
 # install dependencies

@@ -15,6 +15,7 @@ services:
     build: ./frontend
 
     volumes:
+    # host:container
       - ./frontend:/app 
       - node_modules_cached_frontend:/app/node_modules
     # specify the ports to expose for the web service (frontend)
