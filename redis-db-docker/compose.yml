@@ -1,11 +1,10 @@
-version: "3.3"
 services:
     redis:
         image: redis:6.0.7
         container_name: redis
         restart: always
         volumes:
-            - redis_db_data:/data
+            - ./redis_db_data:/data
         ports:
             - 6379:6379
     redis_insight:
@@ -15,7 +14,7 @@ services:
         ports:
             - 8001:8001
         volumes:
-            - redis_insight_data:/db
+            - ./redis_insight_data:/db
 
 volumes:
     redis_db_data:

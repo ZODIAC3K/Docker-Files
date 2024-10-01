@@ -1,0 +1,5 @@
+# This repo has collection of docker-compose files for various services
+# added volume data so that it is not pushed to git repo
+*/redis_insight_data
+*/redis_db_data
+*/pasql_data
